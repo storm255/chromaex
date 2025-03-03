@@ -137,17 +137,17 @@ html = """
 
   <h2>Color Blindness Simulations</h2>
 
-  #{Enum.map(simulated_palettes, fn {{deficiency, simulated}, i} ->
-    """
-    <h3>#{Atom.to_string(deficiency) |> String.capitalize()}</h3>
-    <div class="palette">
-      #{Enum.map(simulated, fn color ->
-        hex = ChromaEx.to_hex(color)
-        "<div class='color' style='background-color: #{hex}'>#{hex}</div>"
-      end) |> Enum.join("")}
-    </div>
-    """
-  end) |> Enum.join("")}
+    #{Enum.map(simulated_palettes, fn {deficiency, simulated} ->
+      """
+      <h3>#{Atom.to_string(deficiency) |> String.capitalize()}</h3>
+      <div class="palette">
+        #{Enum.map(simulated, fn color ->
+          hex = ChromaEx.to_hex(color)
+          "<div class='color' style='background-color: #{hex}'>#{hex}</div>"
+        end) |> Enum.join("")}
+      </div>
+      """
+    end) |> Enum.join("")}
 
   <h2>Usage Examples</h2>
 

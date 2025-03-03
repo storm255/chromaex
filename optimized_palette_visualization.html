@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChromaEx Color Palette Optimization</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; max-width: 1000px; margin: 0 auto; padding: 20px; }
+    h1, h2 { margin-top: 30px; }
+    .palette { display: flex; flex-wrap: wrap; margin: 20px 0; }
+    .color { width: 80px; height: 80px; margin: 0 10px 10px 0; display: flex; align-items: center; justify-content: center; color: #fff; text-shadow: 0 0 2px rgba(0,0,0,0.5); font-size: 12px; border-radius: 4px; }
+    .dark { color: #000; text-shadow: 0 0 2px rgba(255,255,255,0.5); }
+    .sample { padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+    .code { font-family: monospace; background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+    th { background-color: #f5f5f5; }
+  </style>
+</head>
+<body>
+  <h1>ChromaEx Color Palette Optimization</h1>
+
+  <h2>Initial Random Colors</h2>
+  <div class="palette">
+    <div class='color' style='background-color: #13F5E5'>#13F5E5</div><div class='color' style='background-color: #1C22BA'>#1C22BA</div><div class='color' style='background-color: #9D1F65'>#9D1F65</div><div class='color' style='background-color: #F1A89'>#F1A89</div><div class='color' style='background-color: #16C48'>#16C48</div><div class='color' style='background-color: #CCAAC9'>#CCAAC9</div><div class='color' style='background-color: #A3852F'>#A3852F</div><div class='color' style='background-color: #654459'>#654459</div><div class='color' style='background-color: #644212'>#644212</div><div class='color' style='background-color: #9EF28B'>#9EF28B</div>
+  </div>
+
+  <h2>Target Colors</h2>
+  <div class="palette">
+    <div class='color' style='background-color: #4269d0'>#4269d0</div><div class='color' style='background-color: #efb118'>#efb118</div><div class='color' style='background-color: #ff725c'>#ff725c</div><div class='color' style='background-color: #6cc5b0'>#6cc5b0</div><div class='color' style='background-color: #3ca951'>#3ca951</div><div class='color' style='background-color: #ff8ab7'>#ff8ab7</div><div class='color' style='background-color: #a463f2'>#a463f2</div><div class='color' style='background-color: #97bbf5'>#97bbf5</div><div class='color' style='background-color: #9c6b4e'>#9c6b4e</div><div class='color' style='background-color: #9498a0'>#9498a0</div>
+  </div>
+
+  <h2>Optimized Palette</h2>
+  <div class="palette">
+    <div class='color' style='background-color: #54FFFF'>#54FFFF</div><div class='color' style='background-color: #0331F'>#0331F</div><div class='color' style='background-color: #48255C'>#48255C</div><div class='color' style='background-color: #DC9C9B'>#DC9C9B</div><div class='color' style='background-color: #87A3B1'>#87A3B1</div><div class='color' style='background-color: #FFECC5'>#FFECC5</div><div class='color' style='background-color: #60573E'>#60573E</div><div class='color' style='background-color: #791F19'>#791F19</div><div class='color' style='background-color: #81A496'>#81A496</div><div class='color' style='background-color: #A59DC5'>#A59DC5</div>
+  </div>
+
+  <h2>Color Blindness Simulations</h2>
+
+    <h3>Protanopia</h3>
+<div class="palette">
+  <div class='color' style='background-color: #F0F4FF'>#F0F4FF</div><div class='color' style='background-color: #35301F'>#35301F</div><div class='color' style='background-color: #02E5D'>#02E5D</div><div class='color' style='background-color: #A8A59C'>#A8A59C</div><div class='color' style='background-color: #9BA1B1'>#9BA1B1</div><div class='color' style='background-color: #FBEDC6'>#FBEDC6</div><div class='color' style='background-color: #60583F'>#60583F</div><div class='color' style='background-color: #39331B'>#39331B</div><div class='color' style='background-color: #A5A196'>#A5A196</div><div class='color' style='background-color: #8FA0C6'>#8FA0C6</div>
+</div>
+<h3>Deuteranopia</h3>
+<div class="palette">
+  <div class='color' style='background-color: #D6E3FF'>#D6E3FF</div><div class='color' style='background-color: #2D2A21'>#2D2A21</div><div class='color' style='background-color: #21385C'>#21385C</div><div class='color' style='background-color: #B8B09A'>#B8B09A</div><div class='color' style='background-color: #969EB2'>#969EB2</div><div class='color' style='background-color: #FCEEC5'>#FCEEC5</div><div class='color' style='background-color: #60583E'>#60583E</div><div class='color' style='background-color: #514513'>#514513</div><div class='color' style='background-color: #9C9B97'>#9C9B97</div><div class='color' style='background-color: #96A4C5'>#96A4C5</div>
+</div>
+<h3>Tritanopia</h3>
+<div class="palette">
+  <div class='color' style='background-color: #6CF9FF'>#6CF9FF</div><div class='color' style='background-color: #10303A'>#10303A</div><div class='color' style='background-color: #413132'>#413132</div><div class='color' style='background-color: #DD9BA3'>#DD9BA3</div><div class='color' style='background-color: #87A4B0'>#87A4B0</div><div class='color' style='background-color: #FFE7EA'>#FFE7EA</div><div class='color' style='background-color: #635456'>#635456</div><div class='color' style='background-color: #7A1C2E'>#7A1C2E</div><div class='color' style='background-color: #87A1AD'>#87A1AD</div><div class='color' style='background-color: #9FA3A5'>#9FA3A5</div>
+</div>
+
+
+  <h2>Usage Examples</h2>
+
+  <h3>Data Visualization Examples</h3>
+
+  <div class="sample" style="background-color: #f8f9fa;">
+    <h4>Bar Chart</h4>
+    <svg width="800" height="300" viewBox="0 0 800 300">
+      <rect x="50" y="50" width="80" height="200" fill="#54FFFF" />
+      <rect x="150" y="80" width="80" height="170" fill="#0331F" />
+      <rect x="250" y="110" width="80" height="140" fill="#48255C" />
+      <rect x="350" y="140" width="80" height="110" fill="#DC9C9B" />
+      <rect x="450" y="170" width="80" height="80" fill="#87A3B1" />
+      <rect x="550" y="70" width="80" height="180" fill="#FFECC5" />
+      <rect x="650" y="100" width="80" height="150" fill="#60573E" />
+    </svg>
+  </div>
+
+  <div class="sample" style="background-color: #f8f9fa;">
+    <h4>Pie Chart</h4>
+    <svg width="400" height="400" viewBox="0 0 400 400">
+      <g transform="translate(200, 200)">
+        <!-- Simple pie chart segments -->
+        <path d="M0,0 L200,0 A200,200 0 0,1 141,141 Z" fill="#54FFFF" />
+        <path d="M0,0 L141,141 A200,200 0 0,1 0,200 Z" fill="#0331F" />
+        <path d="M0,0 L0,200 A200,200 0 0,1 -141,141 Z" fill="#48255C" />
+        <path d="M0,0 L-141,141 A200,200 0 0,1 -200,0 Z" fill="#DC9C9B" />
+        <path d="M0,0 L-200,0 A200,200 0 0,1 -141,-141 Z" fill="#87A3B1" />
+        <path d="M0,0 L-141,-141 A200,200 0 0,1 0,-200 Z" fill="#FFECC5" />
+        <path d="M0,0 L0,-200 A200,200 0 0,1 200,0 Z" fill="#60573E" />
+      </g>
+    </svg>
+  </div>
+
+  <h2>Elixir Code Example</h2>
+
+  <div class="code">
+    <pre>
+# Generate an optimized 10-color palette
+colors = ChromaEx.generate_palette(10,
+  target_colors: [
+    "#4269d0", "#efb118", "#ff725c", "#6cc5b0", "#3ca951"
+  ],
+  weights: %{
+    energy: 1.25,
+    range: 1.0,
+    target: 0.75,
+    deuteranomaly: 0.5
+  }
+)
+
+# Convert to hex codes for use in your application
+hex_colors = Enum.map(colors, &ChromaEx.to_hex/1)
+    </pre>
+  </div>
+
+</body>
+</html>

@@ -153,4 +153,4 @@ For more information on the theory behind this library:
 
 ## License
 
-ChromaEx is released under the MIT License.
+ChromaEx is released under the GPL3 License.

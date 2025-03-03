@@ -148,9 +148,9 @@ defmodule ChromaEx.Color.Vision do
 
     # Check which transform to use based on the separation plane
     dot_with_sep_plane =
-      rgb[0] * separation_plane_normal[0] +
-        rgb[1] * separation_plane_normal[1] +
-        rgb[2] * separation_plane_normal[2]
+      Enum.at(rgb, 0) * Enum.at(separation_plane_normal, 0) +
+        Enum.at(rgb, 1) * Enum.at(separation_plane_normal, 1) +
+        Enum.at(rgb, 2) * Enum.at(separation_plane_normal, 2)
 
     rgb_cvd_from_rgb =
       if dot_with_sep_plane >= 0 do
@@ -161,23 +161,29 @@ defmodule ChromaEx.Color.Vision do
 
     # Apply the transform to get the simulated color
     rgb_cvd = [
-      rgb_cvd_from_rgb[0] * rgb[0] + rgb_cvd_from_rgb[1] * rgb[1] + rgb_cvd_from_rgb[2] * rgb[2],
-      rgb_cvd_from_rgb[3] * rgb[0] + rgb_cvd_from_rgb[4] * rgb[1] + rgb_cvd_from_rgb[5] * rgb[2],
-      rgb_cvd_from_rgb[6] * rgb[0] + rgb_cvd_from_rgb[7] * rgb[1] + rgb_cvd_from_rgb[8] * rgb[2]
+      Enum.at(rgb_cvd_from_rgb, 0) * Enum.at(rgb, 0) +
+        Enum.at(rgb_cvd_from_rgb, 1) * Enum.at(rgb, 1) +
+        Enum.at(rgb_cvd_from_rgb, 2) * Enum.at(rgb, 2),
+      Enum.at(rgb_cvd_from_rgb, 3) * Enum.at(rgb, 0) +
+        Enum.at(rgb_cvd_from_rgb, 4) * Enum.at(rgb, 1) +
+        Enum.at(rgb_cvd_from_rgb, 5) * Enum.at(rgb, 2),
+      Enum.at(rgb_cvd_from_rgb, 6) * Enum.at(rgb, 0) +
+        Enum.at(rgb_cvd_from_rgb, 7) * Enum.at(rgb, 1) +
+        Enum.at(rgb_cvd_from_rgb, 8) * Enum.at(rgb, 2)
     ]
 
     # Apply severity factor (linear interpolation)
     rgb_cvd = [
-      rgb_cvd[0] * severity + rgb[0] * (1.0 - severity),
-      rgb_cvd[1] * severity + rgb[1] * (1.0 - severity),
-      rgb_cvd[2] * severity + rgb[2] * (1.0 - severity)
+      Enum.at(rgb_cvd, 0) * severity + Enum.at(rgb, 0) * (1.0 - severity),
+      Enum.at(rgb_cvd, 1) * severity + Enum.at(rgb, 1) * (1.0 - severity),
+      Enum.at(rgb_cvd, 2) * severity + Enum.at(rgb, 2) * (1.0 - severity)
     ]
 
     # Convert back to sRGB for display
     {
-      Conversion.linear_rgb_to_srgb(rgb_cvd[0]),
-      Conversion.linear_rgb_to_srgb(rgb_cvd[1]),
-      Conversion.linear_rgb_to_srgb(rgb_cvd[2])
+      Conversion.linear_rgb_to_srgb(Enum.at(rgb_cvd, 0)),
+      Conversion.linear_rgb_to_srgb(Enum.at(rgb_cvd, 1)),
+      Conversion.linear_rgb_to_srgb(Enum.at(rgb_cvd, 2))
     }
   end
 
