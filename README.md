@@ -16,7 +16,7 @@ Add `chromaex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:chromaex, "~> 0.1.0"}
+    {:chromaex, github: "storm255/chromaex"}
   ]
 end
 ```
@@ -94,6 +94,36 @@ colors = ChromaEx.generate_palette(6,
   debug: true # Print debug information during optimization
 )
 ```
+
+Palettes are random unless you pass `seed:`; the same seed and options give the
+same palette, and your process's `:rand` state is left as it was:
+
+```elixir
+ChromaEx.generate_palette(5, fixed_colors: ["#1d3557"], seed: 42)
+```
+
+### Harmonies, Scales and Contrast (OKLCH)
+
+`ChromaEx.Harmony` works in OKLCH, where rotating the hue keeps how light and how
+saturated a colour looks. Colours that fall outside sRGB lose chroma, not hue.
+
+```elixir
+brand = ChromaEx.new("#1d4ed8")
+
+ChromaEx.scheme(brand, :complementary)       # also :analogous, :triadic,
+                                             # :split_complementary, :tetradic,
+                                             # :monochromatic
+ChromaEx.scale(brand, 9)                     # tints to shades, lightest first
+ChromaEx.lighten(brand, 0.1)
+ChromaEx.mix(brand, ChromaEx.new("#ffffff"), 0.25)
+
+# The nearest lightness that reads on the background (WCAG 4.5:1 for text)
+{:ok, ink} = ChromaEx.ensure_contrast(ChromaEx.new("#facc15"), ChromaEx.new("#ffffff"))
+ChromaEx.readable_on(brand)                  # near-black or white, whichever reads
+```
+
+Use harmonies for a look and feel built round a brand colour, and
+`generate_palette/2` when you need many colours that must stay distinguishable.
 
 ### Advanced Usage
 

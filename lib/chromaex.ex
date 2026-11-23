@@ -12,6 +12,8 @@ defmodule ChromaEx do
   - Color distance calculations using CIEDE2000 algorithm
   - Color vision deficiency simulation (protanopia, deuteranopia, tritanopia, etc.)
   - Simulated annealing for generating optimized color palettes
+  - OKLCH harmonies (complementary, triadic...), tint/shade scales and contrast
+    fixes (`ChromaEx.Harmony`)
 
   ## Example Usage
 
@@ -133,6 +135,9 @@ defmodule ChromaEx do
     - `:avoid_colors`: Optional list of colors to avoid
     - `:fixed_colors`: Optional list of colors that should not be modified
     - `:background_color`: Background color for contrast calculation
+    - `:seed`: An integer to make the result reproducible
+    - `:min_contrast`: A WCAG ratio every colour should reach on the background
+      (3.0 for graphics)
     - Other options are passed to the optimizer
 
   ## Examples
@@ -146,6 +151,17 @@ defmodule ChromaEx do
       iex> length(colors)
       5
   """
+  # Harmonies and adjustments, worked in OKLCH (see ChromaEx.Harmony)
+  defdelegate scheme(base, name), to: ChromaEx.Harmony
+  defdelegate scale(color, steps \\ 9), to: ChromaEx.Harmony
+  defdelegate lighten(color, amount \\ 0.1), to: ChromaEx.Harmony
+  defdelegate darken(color, amount \\ 0.1), to: ChromaEx.Harmony
+  defdelegate mix(a, b, t \\ 0.5), to: ChromaEx.Harmony
+  defdelegate ensure_contrast(color, background, ratio \\ 4.5), to: ChromaEx.Harmony
+  defdelegate readable_on(background, candidates \\ nil), to: ChromaEx.Harmony
+  defdelegate to_oklch(color), to: ChromaEx.Color.Oklch
+  defdelegate from_oklch(lch), to: ChromaEx.Color.Oklch
+
   def generate_palette(count, opts \\ []) do
     # Process options
     target_colors = parse_color_list(Keyword.get(opts, :target_colors, []))

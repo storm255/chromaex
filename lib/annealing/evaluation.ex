@@ -23,6 +23,11 @@ defmodule ChromaEx.Annealing.Evaluation do
     - `:avoid_colors`: Optional list of colors to avoid
     - `:background_color`: Background color for contrast calculation
     - `:weights`: Map of weights for different factors
+    - `:min_contrast`: Optional WCAG ratio every colour should reach on the
+      background (3.0 suits graphics). Each colour below it adds
+      `weights.min_contrast` (default 30) per unit of ratio it falls short. The
+      `contrast` factor alone only scores the lowest-contrast colour, which is often
+      a fixed one, so it can't lift the others.
 
   ## Examples
 
@@ -48,6 +53,8 @@ defmodule ChromaEx.Annealing.Evaluation do
       avoid: 0.5,
       # How good is contrast with background
       contrast: 0.25,
+      # Per unit of ratio a colour falls short of :min_contrast
+      min_contrast: 30.0,
 
       # Color vision deficiency weights
       protanopia: 0.1,
@@ -108,6 +115,17 @@ defmodule ChromaEx.Annealing.Evaluation do
 
     contrast_score = 100 - min_contrast / max_possible_contrast * 100
 
+    shortfall =
+      case Keyword.get(opts, :min_contrast) do
+        nil ->
+          0
+
+        floor ->
+          colors
+          |> Enum.map(&max(0, floor - Distance.contrast_ratio(&1, background_color)))
+          |> Enum.sum()
+      end
+
     # Apply weights and sum up the final cost
     weighted_cost =
       weights.energy * energy_score +
@@ -115,6 +133,7 @@ defmodule ChromaEx.Annealing.Evaluation do
         weights.target * target_score +
         weights.avoid * avoid_score +
         weights.contrast * contrast_score +
+        weights.min_contrast * shortfall +
         weights.protanopia * cvd_scores.protanopia +
         weights.protanomaly * cvd_scores.protanomaly +
         weights.deuteranopia * cvd_scores.deuteranopia +
@@ -147,10 +166,9 @@ defmodule ChromaEx.Annealing.Evaluation do
       end
 
     # Calculate all pairwise distances
-    for i <- 0..(length(colors) - 2),
-        j <- (i + 1)..(length(colors) - 1) do
-      color_i = Enum.at(colors, i)
-      color_j = Enum.at(colors, j)
+    for {color_i, i} <- Enum.with_index(colors),
+        {color_j, j} <- Enum.with_index(colors),
+        i < j do
       Distance.delta_e(color_i, color_j)
     end
   end

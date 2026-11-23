@@ -42,6 +42,10 @@ defmodule ChromaEx.Color do
     new(r, g, b)
   end
 
+  def new(r, g, b) when is_float(r) and is_float(g) and is_float(b) do
+    %__MODULE__{r: r, g: g, b: b}
+  end
+
   def new(r, g, b) when is_integer(r) and is_integer(g) and is_integer(b) do
     %__MODULE__{
       r: r / 255,
@@ -90,7 +94,16 @@ defmodule ChromaEx.Color do
   """
   def to_hex(%__MODULE__{} = color) do
     {r, g, b} = to_rgb(color)
-    "#" <> Integer.to_string(r, 16) <> Integer.to_string(g, 16) <> Integer.to_string(b, 16)
+    "#" <> Enum.map_join([r, g, b], &hex_byte/1)
+  end
+
+  defp hex_byte(v) do
+    v
+    |> max(0)
+    |> min(255)
+    |> Integer.to_string(16)
+    |> String.pad_leading(2, "0")
+    |> String.downcase()
   end
 
   @doc """

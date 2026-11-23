@@ -22,10 +22,14 @@ defmodule ChromaEx.Annealing.Optimizer do
     - `:avoid_colors`: Optional list of colors to avoid
     - `:background_color`: Background color for contrast calculation
     - `:weights`: Map of weights for different factors
+    - `:min_contrast`: WCAG ratio each colour should reach on the background (see
+      `ChromaEx.Annealing.Evaluation.cost/2`)
     - `:temperature`: Starting temperature (default: 1000)
     - `:cooling_rate`: Rate at which temperature decreases (default: 0.99)
     - `:cutoff`: Temperature at which to stop (default: 0.0001)
     - `:debug`: Whether to output debug information (default: false)
+    - `:seed`: An integer; when given the run is reproducible (the same seed and
+      options give the same palette). The caller's `:rand` state is restored after.
 
   ## Examples
 
@@ -39,6 +43,24 @@ defmodule ChromaEx.Annealing.Optimizer do
       ]
   """
   def optimize(count, opts \\ []) do
+    case Keyword.pop(opts, :seed) do
+      {nil, opts} -> run(count, opts)
+      {seed, opts} when is_integer(seed) -> with_seed(seed, fn -> run(count, opts) end)
+    end
+  end
+
+  defp with_seed(seed, fun) do
+    saved = :rand.export_seed()
+    :rand.seed(:exsss, seed)
+
+    try do
+      fun.()
+    after
+      if saved == :undefined, do: :rand.seed(:exsss), else: :rand.seed(saved)
+    end
+  end
+
+  defp run(count, opts) do
     # Get options or use defaults
     initial_colors = Keyword.get(opts, :initial_colors, [])
     fixed_colors = Keyword.get(opts, :fixed_colors, [])
@@ -53,10 +75,8 @@ defmodule ChromaEx.Annealing.Optimizer do
     debug = Keyword.get(opts, :debug, false)
 
     # Build initial list of colors
-    colors =
-      (fixed_colors ++
-         initial_colors)
-      |> Enum.take(count - length(fixed_colors))
+    # Fixed colours always come first and are kept; initial colours fill what's left
+    colors = fixed_colors ++ Enum.take(initial_colors, max(count - length(fixed_colors), 0))
 
     # If we don't have enough colors, generate random ones
     colors =
@@ -71,7 +91,8 @@ defmodule ChromaEx.Annealing.Optimizer do
       target_colors: target_colors,
       avoid_colors: avoid_colors,
       background_color: background_color,
-      weights: weights
+      weights: weights,
+      min_contrast: Keyword.get(opts, :min_contrast)
     ]
 
     # Track original colors and cost for debugging
@@ -149,19 +170,19 @@ defmodule ChromaEx.Annealing.Optimizer do
       # For each color that isn't fixed
       {new_colors, new_cost} =
         Enum.reduce_while(
-          fixed_count..(length(colors) - 1),
+          fixed_count..(length(colors) - 1)//1,
           {colors, current_cost},
           fn i, {current_colors, current_cost} ->
             # Create new state with a random nearby color
             new_colors = List.update_at(current_colors, i, &Color.random_nearby/1)
             new_cost = Evaluation.cost(new_colors, eval_opts)
 
-            # Calculate probability of accepting a worse solution
             delta = new_cost - current_cost
-            probability = :math.exp(-delta / temperature)
 
-            # Accept if better (lower cost) or with a random probability
-            if delta < 0 || :rand.uniform() < probability do
+            # Accept if better (lower cost), or a worse one with probability
+            # exp(-delta / T). Only computed for delta >= 0: for a large
+            # improvement at low T the exponent would overflow.
+            if delta < 0 or :rand.uniform() < :math.exp(-delta / temperature) do
               {:cont, {new_colors, new_cost}}
             else
               {:cont, {current_colors, current_cost}}
